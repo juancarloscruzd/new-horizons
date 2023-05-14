@@ -1,0 +1,15 @@
+@import '../../styles/form.module';
+
+.products {
+  display: flex;
+  flex-direction: column;
+
+  .title {
+    margin: 0;
+    font-size: 2rem;
+  }
+
+  .form {
+    max-width: 600px;
+  }
+}

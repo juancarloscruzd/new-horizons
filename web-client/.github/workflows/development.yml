@@ -1,0 +1,76 @@
+name: Development
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  # test:
+  #   name: Test
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout repo
+  #       uses: actions/checkout@v2
+  #     - name: Setup Node 16
+  #       uses: actions/setup-node@v1
+  #       with:
+  #         node-version: 16
+  #     - name: Install dependencies & Build
+  #       run: |
+  #         npm ci
+  #         npm run test:coverage
+  #     - name: SonarCloud Scan
+  #       uses: sonarsource/sonarcloud-github-action@master
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  build:
+    name: Build
+    # needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Setup Node 16
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+      - name: Install dependencies & Build
+        run: |
+          npm ci
+          npm run build
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifact-${{github.ref_name}}
+          path: out
+      - name: Version artifact
+        run: |
+          mv out out-v$(npm pkg get version | tr -d '"')
+          echo "package_version=$(npm pkg get version | tr -d '"')" >> $GITHUB_ENV
+      - name: Upload artifact versioned
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifact-v${{env.package_version}}
+          path: out-v${{env.package_version}}
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: artifact-${{github.ref_name}}
+          path: out
+      - name: Upload to firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_DMC_QA_PROJECT }}'
+          projectId: dmc-qa-project
+          channelId: live

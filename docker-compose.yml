@@ -1,0 +1,44 @@
+version: '3'
+services:
+  database:
+    image: mysql:5.7
+    environment:
+      - MYSQL_DATABASE=newhorizons
+      - MYSQL_ROOT_PASSWORD=root
+    cap_add:
+      - SYS_NICE
+    ports:
+      - "3306:3306"
+  employees:
+    image: employees:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    depends_on:
+      - database
+  products:
+    image: products:latest
+    ports:
+      - "8081:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    depends_on:
+      - database
+  terms:
+    image: terms:latest
+    ports:
+      - "8082:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    depends_on:
+      - database
+  web-client:
+    image: web-client:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - employees
+      - products
+      - terms
+      - database

@@ -1,0 +1,28 @@
+version: '3'
+services:
+ employees:
+    image: juancarloscruzd/employees:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+ products:
+    image: juancarloscruzd/products:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+ terms:
+    image: juancarloscruzd/terms:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+ web-client:
+    image: juancarloscruzd/web-client:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - employees
+      - products
+      - terms

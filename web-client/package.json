@@ -1,0 +1,43 @@
+{
+  "name": "dmc-fe",
+  "version": "0.3.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build && next export",
+    "start": "next build && next start",
+    "lint": "next lint",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "clean": "rm -rf .next out coverage",
+    "prepare": "husky install"
+  },
+  "dependencies": {
+    "axios": "^0.24.0",
+    "dayjs": "^1.10.7",
+    "nanoid": "^3.1.30",
+    "next": "^12.0.7",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "sass": "^1.43.5"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/react": "^12.1.2",
+    "eslint": "7.32.0",
+    "eslint-config-next": "11.1.2",
+    "eslint-config-prettier": "^8.3.0",
+    "husky": "^7.0.2",
+    "jest": "^27.4.3",
+    "lint-staged": "^11.2.3",
+    "prettier": "^2.4.1",
+    "react-test-renderer": "^17.0.2",
+    "serve": "^13.0.2"
+  },
+  "lint-staged": {
+    "*.{js,css}": [
+      "prettier --write \"{__tests__,__mocks__,components,common,pages,styles}/**/*.{js,css,scss}\""
+    ]
+  }
+}
